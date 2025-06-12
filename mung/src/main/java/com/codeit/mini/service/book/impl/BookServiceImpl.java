@@ -38,12 +38,13 @@ public class BookServiceImpl implements IBookService {
 
     @Override
     @Transactional
-    public void saveBook(BookDTO bookDTO, String tempEpubFilePath, String originalFileName) throws IOException {
+    public void saveBook(BookDTO bookDTO, String tempEpubFilePath, String originalFileName, int rentPoint) throws IOException {
 
         log.info("BookService.saveBook 메서드 진입");
         log.info("BookDTO: " + bookDTO.toString());
         log.info("임시 EPUB 파일 경로: " + tempEpubFilePath);
         log.info("원본 파일명: " + originalFileName);
+        log.info("전달받은 rentPoint: " + rentPoint);
 
         String finalEpubPath = null;
         Path sourceEpubPath = Paths.get(tempEpubFilePath);
@@ -123,6 +124,7 @@ public class BookServiceImpl implements IBookService {
         bookEntity.setPublisher(bookDTO.getPublisher());
         bookEntity.setCategory(bookDTO.getCategory());
         bookEntity.setDescription(bookDTO.getDescription());
+        bookEntity.setRentPoint(rentPoint);
 
         // 최종적으로 저장된 파일의 경로를 엔터티에 설정
         bookEntity.setEpubPath(finalEpubPath); // 서버 파일 시스템의 절대 경로
@@ -163,12 +165,10 @@ public class BookServiceImpl implements IBookService {
         }
 
         // 추가적인 BookEntity 필드 초기화 (기본값 설정)
-        bookEntity.setRentPoint(0);
         bookEntity.setRentCount(0);
         bookEntity.setWishCount(0);
         bookEntity.setAvgRating(0.0);
         bookEntity.setReviewCount(0);
-        // regDate와 upDate는 @PrePersist/@PreUpdate 어노테이션을 사용하여 엔티티에서 자동 설정됩니다.
 
         // 4. Book 엔터티를 데이터베이스에 저장
         bookRepository.save(bookEntity); // save 메서드는 엔티티를 반환하지만, void로 처리 가능
