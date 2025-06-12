@@ -10,7 +10,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.codeit.mini.dto.book.BookDTO;
+import com.codeit.mini.dto.book.UpdateBookDTO;
 import com.codeit.mini.entity.book.BookEntity;
 import com.codeit.mini.repository.book.IBookRepository;
 import com.codeit.mini.service.book.IBookService;
@@ -174,4 +178,88 @@ public class BookServiceImpl implements IBookService {
         bookRepository.save(bookEntity); // save 메서드는 엔티티를 반환하지만, void로 처리 가능
         log.info("BookEntity DB 저장 완료: " + bookEntity.getBookId());
     }
+
+	@Override
+	@Transactional
+	public BookDTO getBookById(Long bookId) {
+		log.info("bookId : {}", bookId);
+		
+		Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
+		
+		if (optionalBook.isPresent()) {
+			BookEntity bookEntity = optionalBook.get();
+			
+			log.info("검색 도서 제목 : {}", bookEntity.getTitle());
+			
+			BookDTO bookDTO = entityToDto(bookEntity);
+										   
+			return bookDTO;
+		} else {
+			log.warn("ID {} 에 해당하는 도서를 찾을 수 없습니다.", bookId);
+			return null;
+		}
+	}
+
+	@Transactional
+	@Override
+	public void modify(UpdateBookDTO updateBookDTO) throws Exception {
+		log.info("BookService.updateBook({}) 호출됨", updateBookDTO);
+		
+		if (updateBookDTO.getBookId() == null) {
+			log.error("bookId 검색 실패");
+			throw new IllegalArgumentException("bookId가 필요합니다.");
+		}
+		
+		Optional<BookEntity> optional = bookRepository.findById(updateBookDTO.getBookId());
+		
+		if (optional.isPresent()) {
+			
+			BookEntity bookEntity = optional.get();
+			
+			if (updateBookDTO.getCategory() != null) {
+				bookEntity.setCategory(updateBookDTO.getCategory());
+			}
+			if (updateBookDTO.getDescription() != null) {
+				bookEntity.setDescription(updateBookDTO.getDescription());
+			}
+			if (updateBookDTO.getRentPoint() != null) {
+				bookEntity.setRentPoint(updateBookDTO.getRentPoint());
+			}
+			
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<BookDTO> getAllBooks() {
+		
+		List<BookEntity> bookList = bookRepository.findAll();
+		
+		List<BookDTO> bookDTOList = bookList.stream().map(this::entityToDto)
+											.collect(Collectors.toList());
+		
+		return bookDTOList;
+	}
+	
+	@Transactional
+	@Override
+	public void remove(Long bookId) throws Exception{
+		log.info("remove bookId : {}", bookId);
+		
+		if (bookId == null) {
+			log.error("bookId가 null입니다.");
+			throw new IllegalArgumentException("삭제할 도서 ID는 필수입니다.");
+		}
+		
+		boolean rs = bookRepository.existsById(bookId);
+		
+		if (!rs) {
+			log.warn("삭제할 도서가 존재하지 않습니다.");
+            throw new IllegalArgumentException("존재하지 않는 도서입니다.");
+		}
+		
+		bookRepository.deleteById(bookId);
+		
+		log.info("remove id : {}", bookId);
+	}
 }
