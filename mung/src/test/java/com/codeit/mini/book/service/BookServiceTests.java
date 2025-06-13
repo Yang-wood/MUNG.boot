@@ -1,4 +1,4 @@
-package com.codeit.mini.book;
+package com.codeit.mini.book.service;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ class BookServiceTests {
 	private IBookRepository repository;
 	
 //	@Test
-//	void testUpdateBook() throws Exception{
+//	void testModifyBook() throws Exception{
 //		UpdateBookDTO updateBookDTO = UpdateBookDTO.builder().bookId(6L).category("전쟁")
 //				.description("수정해본다").rentPoint(200).build();
 //		

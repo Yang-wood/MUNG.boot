@@ -1,12 +1,13 @@
-package com.codeit.mini.book;
+package com.codeit.mini.book.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.codeit.mini.entity.book.BookEntity;
 import com.codeit.mini.service.book.IBookSearchService;
@@ -25,8 +26,11 @@ class BookSearchServiceTests {
 		
 		String type = "all";
 		String keyword = "";
+		Integer point = 100;
+		Pageable pageable = PageRequest.of(0, 20);
 		
-		List<BookEntity> rs = bookSearchService.searchBook(type, keyword);
+		
+		Page<BookEntity> rs = bookSearchService.searchBook(type, keyword, point, pageable);
 		
 		rs.forEach(book -> {
 			log.info(book);
