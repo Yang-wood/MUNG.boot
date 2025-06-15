@@ -14,8 +14,10 @@ import com.codeit.mini.repository.member.IMemberRepository;
 import com.codeit.mini.service.book.IWishService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class WishServiceImpl implements IWishService{
 	
@@ -23,33 +25,66 @@ public class WishServiceImpl implements IWishService{
 	private final IMemberRepository memberRepository;
 	private final IBookRepository bookRepository;
 	
-	@Transactional
+	// 찜 등록
 	@Override
-	public boolean toggleWish(Long memberId, Long bookId) throws Exception {
+	@Transactional
+	public WishEntity addWished(Long bookId, Long memberId) throws Exception {
+		MemberEntity memberEntity = memberRepository.findById(memberId)
+								.orElseThrow(() -> new IllegalAccessException("NOT Member"));
+		BookEntity bookEntity = bookRepository.findById(bookId)
+								.orElseThrow(() -> new IllegalAccessException("NOT Book"));
+		
+		Optional<WishEntity> isWish = wishRepository.findByMemberEntityAndBookEntity(bookEntity, memberEntity);
+		
+		if (isWish.isPresent()) {
+			log.warn("이미 찜 상태입니다.");
+			throw new IllegalStateException("이미 찜 상태입니다.");
+		}
+		
+		WishEntity wishEntity = WishEntity.builder().bookEntity(bookEntity)
+													.memberEntity(memberEntity)
+													.build();
+		
+		bookEntity.setWishCount(bookEntity.getWishCount() + 1);
+		bookRepository.save(bookEntity);
+		
+		wishRepository.save(wishEntity);
+		
+		return wishEntity;
+	}
+	
+	// 찜삭제
+	@Override
+	@Transactional
+	public boolean removeWished(Long bookId, Long memberId) throws Exception {
 		
 		MemberEntity memberEntity = memberRepository.findById(memberId)
 								.orElseThrow(() -> new IllegalAccessException("NOT Member"));
 		BookEntity bookEntity = bookRepository.findById(bookId)
 								.orElseThrow(() -> new IllegalAccessException("NOT Book"));
 		
-		Optional<WishEntity> existWish = wishRepository.findByMemberEntityAndBookEntity(memberEntity, bookEntity);
+		Optional<WishEntity> existWished = wishRepository.findByMemberEntityAndBookEntity(bookEntity, memberEntity);
 		
-		if (existWish.isPresent()) {
-			// 찜 횟수 감소식
+		if (existWished.isPresent()) {
+			wishRepository.delete(existWished.get());
 			bookEntity.setWishCount(bookEntity.getWishCount() - 1);
 			bookRepository.save(bookEntity);
-			wishRepository.delete(existWish.get());
-			return false;
-		} else {
-			WishEntity wishEntity = WishEntity.builder().memberEntity(memberEntity)
-														.bookEntity(bookEntity)
-														.build();
-			// 찜 횟수 증가식
-			bookEntity.setWishCount(bookEntity.getWishCount() + 1);
-			bookRepository.save(bookEntity);
-			wishRepository.save(wishEntity);
+			
 			return true;
 		}
+		return false;
 	}
-
+	
+	// 찜 상태확인
+	@Override
+	public boolean isWished(Long bookId, Long memberId) throws Exception {
+		MemberEntity memberEntity = memberRepository.findById(memberId)
+				.orElseThrow(() -> new IllegalAccessException("Not member"));
+		BookEntity bookEntity = bookRepository.findById(bookId)
+				.orElseThrow(() -> new IllegalAccessException("Not book"));
+		
+		return wishRepository
+				.findByMemberEntityAndBookEntity(bookEntity, memberEntity)
+				.isPresent();
+	}
 }

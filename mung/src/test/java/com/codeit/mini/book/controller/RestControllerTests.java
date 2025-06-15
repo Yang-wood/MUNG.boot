@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.codeit.mini.entity.book.BookEntity;
+import com.codeit.mini.entity.book.RentEntity;
 import com.codeit.mini.repository.book.IBookRepository;
 import com.codeit.mini.repository.book.IRentRepository;
 import com.codeit.mini.repository.book.IWishRepository;
@@ -74,20 +75,4 @@ class RestControllerTests {
 //		log.info("대여 결과 : {}", rentEntity);
 //	}
 	
-	@Test
-	void testToggleWish() throws Exception {
-		
-		Long bookId = 3L;
-		Long memberId = 3L;
-		
-//		boolean add = wishService.toggleWish(memberId, bookId);
-//		if (add) {
-//			log.info("찜 성공");
-//		}
-		
-		boolean remove = wishService.toggleWish(memberId, bookId);
-		if (remove) {
-			log.info("찜 삭제");
-		}
-	}
 }

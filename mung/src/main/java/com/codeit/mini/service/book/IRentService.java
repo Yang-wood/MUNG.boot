@@ -7,5 +7,7 @@ public interface IRentService {
 	RentEntity rentBook(Long bookId, Long memberId) throws Exception;
 	
 	void rentEndList() throws Exception;
+	
+	boolean isRented(Long bookId, Long memberId) throws Exception;
 
 }

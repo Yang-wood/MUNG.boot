@@ -32,11 +32,7 @@ public class SearchBookRepositoryImpl extends QuerydslRepositorySupport implemen
 		
 		BooleanBuilder builder = new BooleanBuilder();
 		
-		if (!StringUtils.hasText(keyword)) {
-			if (point != null) {
-                builder.and(qBook.rentPoint.eq(point));
-            }
-		} else {
+		if (StringUtils.hasText(keyword)) {
 			BooleanExpression conditions = null;
 			Integer pointKeyword = null;
 			boolean isKeyNum = false;
@@ -47,6 +43,7 @@ public class SearchBookRepositoryImpl extends QuerydslRepositorySupport implemen
 			} catch (NumberFormatException ignored) {
 				
 			}
+			
 			if (type.equalsIgnoreCase("point") && isKeyNum) {
 				conditions = qBook.rentPoint.eq(pointKeyword);
 			} else if (type.contentEquals("all") || !StringUtils.hasText(type)) {
@@ -67,9 +64,10 @@ public class SearchBookRepositoryImpl extends QuerydslRepositorySupport implemen
 			if (conditions != null) {
 				builder.and(conditions);
 			}
-			if (point != null) {
-				builder.and(qBook.rentPoint.eq(point));
-			}
+		}
+		
+		if (point != null) {
+			builder.and(qBook.rentPoint.eq(point));
 		}
 		
 		query.where(builder);

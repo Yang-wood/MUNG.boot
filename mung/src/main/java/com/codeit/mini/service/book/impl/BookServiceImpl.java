@@ -104,7 +104,7 @@ public class BookServiceImpl implements IBookService {
                 Files.write(coverImagePath, bookDTO.getCoverImageData()); // byte[] 데이터를 파일로 저장
 
                 // DB에 저장될 웹 접근 가능한 경로
-                coverImageWebPath = "/upload/" + COVER_IMAGE_SUB_DIR + coverImageFileName;
+                coverImageWebPath = "/uploadepub/" + COVER_IMAGE_SUB_DIR + coverImageFileName;
                 log.info("표지 이미지 서버 저장 완료: " + coverImagePath.toString() + ", 웹 경로: " + coverImageWebPath);
 
             } catch (IOException e) {

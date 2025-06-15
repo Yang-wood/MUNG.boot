@@ -27,15 +27,5 @@ class WishServiceTests {
 	@Autowired
 	private IWishRepository wishRepository;
 	
-	@Test
-	void testToggleWish() throws Exception {
-		Long memberId = 1L;
-		Long bookId = 1L;
-		
-		//boolean added = wishService.toggleWish(memberId, bookId);
-		
-		boolean remove = wishService.toggleWish(memberId, bookId);
-				
-		
-	}
+	
 }
