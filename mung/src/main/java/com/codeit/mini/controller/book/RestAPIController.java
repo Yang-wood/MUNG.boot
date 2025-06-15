@@ -112,16 +112,16 @@ public class RestAPIController {
 	}
 	
 	// 도서 필요 포인트 출력
-	@GetMapping()
-	public ResponseEntity<Map<String, Integer>> getBookCost(@PathVariable Long bookId) throws Exception {
-		
-		BookEntity bookEntity = bookRepository.findById(bookId)
-							.orElseThrow(()-> new IllegalAccessException("해당 도서가 없습니다."));
-		
-		Map<String, Integer> rs = new HashMap<>();
-		rs.put("pointCost", bookEntity.getRentPoint());
-		
-		return new ResponseEntity<>(rs, HttpStatus.OK);
-	}
+//	@GetMapping()
+//	public ResponseEntity<Map<String, Integer>> getBookCost(@PathVariable Long bookId) throws Exception {
+//		
+//		BookEntity bookEntity = bookRepository.findById(bookId)
+//							.orElseThrow(()-> new IllegalAccessException("해당 도서가 없습니다."));
+//		
+//		Map<String, Integer> rs = new HashMap<>();
+//		rs.put("pointCost", bookEntity.getRentPoint());
+//		
+//		return new ResponseEntity<>(rs, HttpStatus.OK);
+//	}
 	
 }

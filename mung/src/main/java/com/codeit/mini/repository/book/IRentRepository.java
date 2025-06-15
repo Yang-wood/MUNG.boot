@@ -21,5 +21,7 @@ public interface IRentRepository extends JpaRepository<RentEntity, Long>{
 						 BookEntity bookEntity,
 						 MemberEntity memberEntity,
 						 Integer isReturned);
+	
+	
 
 }

@@ -131,7 +131,7 @@
 
 <div class="container py-4">
     <div class="container">
-        <form class="mb-4" method="get" action="/book/search" id="searchForm">
+        <!-- <form class="mb-4" method="get" action="/book/search" id="searchForm">
             <div class="row g-2 align-items-end justify-content-center">
                 <div class="col-md-2">
                     <select id="searchType" name="type" class="form-select">
@@ -158,15 +158,15 @@
 					</select>
 				</div>
 			</div>
-        </form>
+        </form> -->
 		
         <hr>
 
         <div id="bookListContainer">
-            <div th:if="${#lists.isEmpty(books)}" class="text-center text-muted mt-5">
+            <!-- <div th:if="${#lists.isEmpty(books)}" class="text-center text-muted mt-5">
                 <p>검색 결과가 없습니다.</p>
-            </div>
-            <div th:each="book : ${books}" class="book-item d-flex align-items-start">
+            </div> -->
+            <div th:each="book : ${wishList}" class="book-item d-flex align-items-start">
                 <img th:src="${book.coverImage}" alt="표지" class="book-cover">
                 <div class="book-info">
                     <div class="book-title" th:text="${book.title}">도서 제목</div>

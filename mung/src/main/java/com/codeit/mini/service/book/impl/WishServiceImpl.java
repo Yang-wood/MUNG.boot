@@ -2,6 +2,8 @@ package com.codeit.mini.service.book.impl;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +36,7 @@ public class WishServiceImpl implements IWishService{
 		BookEntity bookEntity = bookRepository.findById(bookId)
 								.orElseThrow(() -> new IllegalAccessException("NOT Book"));
 		
-		Optional<WishEntity> isWish = wishRepository.findByMemberEntityAndBookEntity(bookEntity, memberEntity);
+		Optional<WishEntity> isWish = wishRepository.findByMemberEntityAndBookEntity(memberEntity, bookEntity);
 		
 		if (isWish.isPresent()) {
 			log.warn("이미 찜 상태입니다.");
@@ -63,7 +65,7 @@ public class WishServiceImpl implements IWishService{
 		BookEntity bookEntity = bookRepository.findById(bookId)
 								.orElseThrow(() -> new IllegalAccessException("NOT Book"));
 		
-		Optional<WishEntity> existWished = wishRepository.findByMemberEntityAndBookEntity(bookEntity, memberEntity);
+		Optional<WishEntity> existWished = wishRepository.findByMemberEntityAndBookEntity(memberEntity, bookEntity);
 		
 		if (existWished.isPresent()) {
 			wishRepository.delete(existWished.get());
@@ -84,7 +86,17 @@ public class WishServiceImpl implements IWishService{
 				.orElseThrow(() -> new IllegalAccessException("Not book"));
 		
 		return wishRepository
-				.findByMemberEntityAndBookEntity(bookEntity, memberEntity)
+				.findByMemberEntityAndBookEntity(memberEntity, bookEntity)
 				.isPresent();
 	}
+	
+	// 찜 목록
+	@Override
+	public Page<BookEntity> findWishListByMemberId(Long memberId, Pageable pageable) throws Exception {
+		
+		Page<WishEntity> wishPage = wishRepository.findByMemberEntity_MemberId(memberId, pageable);
+		
+		return wishPage.map(WishEntity::getBookEntity);
+	}
+	
 }
