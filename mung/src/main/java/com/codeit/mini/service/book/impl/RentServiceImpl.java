@@ -39,6 +39,7 @@ public class RentServiceImpl implements IRentService {
 		BookEntity bookEntity = bookRepository.findById(bookId)
 							  .orElseThrow(() -> new IllegalAccessException("bookInfo : No"));
 		
+		
 		Optional<RentEntity> isRent = rentRepository.findByBookEntityAndMemberEntityAndIsReturned(bookEntity, memberEntity, 0);
 		if (isRent.isPresent()) {
 			log.warn("이미 대여중입니다.");
@@ -48,7 +49,6 @@ public class RentServiceImpl implements IRentService {
 		LocalDateTime now = LocalDateTime.now();
         LocalDateTime returnDate = now.plusDays(7);
         
-   
         RentEntity rentEntity = RentEntity.builder().bookEntity(bookEntity)
         											.memberEntity(memberEntity)
         											.rentDate(now)
