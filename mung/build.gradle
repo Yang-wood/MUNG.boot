@@ -60,6 +60,8 @@ dependencies {
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
 	// 백엔드 유효성 검사
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// 이메일 인증
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	
 	
 }

@@ -2,9 +2,12 @@ package com.codeit.mini.entity.vending;
 
 import com.codeit.mini.entity.admin.Admin;
 import com.codeit.mini.entity.comm.BaseEntity;
+import com.codeit.mini.entity.comm.VendingType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -48,8 +51,9 @@ public class VendingMachinesEntity extends BaseEntity{
 	@Column(name = "name", length = 60, nullable = false)
 	private String name;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "type", length = 30, nullable = false)
-	private String type;
+	private VendingType type;
 	
 	@Column(name = "description", length = 300)
 	private String description;
@@ -58,7 +62,6 @@ public class VendingMachinesEntity extends BaseEntity{
     @Builder.Default
     @Column(name = "is_active", nullable = false)
     private Integer isActive = 1;
-    
     
     
     public void changeName(String newName) {

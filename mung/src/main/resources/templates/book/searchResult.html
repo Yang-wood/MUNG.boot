@@ -95,7 +95,7 @@
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
-    					<button type="button" class="close" data-dismiss="modal">&times;</button>
+    					<button type="button" class="close" data-dismiss="modal"></button>
       					<h4 class="modal-title" id="modallabel">결제 방식을 선택하세요</h4>
     			</div>
     			<div class="modal-boby text-center">
@@ -115,11 +115,15 @@
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
-    					<button type="button" class="close" data-dismiss="modal">&times;</button>
-      					<h4 class="modal-title" id="modallabel">결제 확인</h4>
+   					<button type="button" class="close" data-dismiss="modal"></button>
+					<h4 class="modal-title" id="modallabel">결제 확인</h4>
     			</div>
-    			<div class="modal-boby text-center" id="bookPayment">
-    			</div>
+    			<div class="modal-body text-center" id="bookPayment">
+                <p><strong>도서 제목 : </strong> <span id="modalBookTitle"></span></p>
+                <p><strong>필요 포인트 : </strong> <span id="modalRentPoint"></span> P</p>
+                <p><strong>보유 포인트 : </strong> <span id="modalMemberPoint"></span> P</p>
+                <p id="modalCompareMessage" class="fw-bold"></p>
+            </div>
     			<div class="modal-footer">
     				<button class="btn btn-success" id="bookPaymentBtn">결제하기</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
@@ -191,6 +195,8 @@
                     
                     <button th:if="${!book.rentedByCurrentUser}" 
                     		th:data-book-id="${book.bookId}"
+        					th:data-book-title="${book.title}"
+        					th:data-rent-point="${book.rentPoint}"
                     		class="btn btn-success rentBtn">대여하기</button>
                     <div class="point-text">필요 포인트 : <span th:text="${book.rentPoint}">요구 포인트</span></div>
                 </div>
@@ -241,30 +247,48 @@ $(document).ready(function() {
 		$("#searchForm").submit();
 	});
 	
-	// 대여 후 버튼변경
+	// 대여 관련
 	$(".rentBtn").click(function() {
 		const rentBtn = $(this);
 		const bookId = rentBtn.data("book-id");
+		const bookTitle = rentBtn.data("book-title");
+	    const rentPoint = rentBtn.data("rent-point");
 		var openBtn = `<a href="/book/epubRead?bookId=${bookId}" class="btn btn-primary read-button">열람하기</a>`;
 		
-		$.ajax({
-			url: "/api/book/rent",
-			type: "post",
-			data: {
-				bookId: bookId
-			},
-			success: function(rs) {
-				alert("대여 신청 완료");
-				rentBtn.hide();
-				rentBtn.after(openBtn);
-			},
-			error: function(xhr, status, error) {
-                var errorMessage = xhr.responseText || '도서 대여 중 오류가 발생했습니다.';
-                alert('오류: ' + errorMessage);
-            }
+		$("#modalBookTitle").text(bookTitle);
+	    $("#modalRentPoint").text(rentPoint);
+		
+	    $.get("/api/book/getPoint", function (member) {
+	        const memberPoint = member.points;
+	        $("#modalMemberPoint").text(memberPoint);
+
+	        if (memberPoint >= rentPoint) {
+	            $("#modalCompareMessage").text("결제가 가능합니다.").css("color", "green");
+	            $("#bookPaymentBtn").prop("disabled", false);
+	        } else {
+	            $("#modalCompareMessage").text("보유 포인트가 부족합니다.").css("color", "red");
+	            $("#bookPaymentBtn").prop("disabled", true);
+	        }
+	        $('#bookPaymentBtn').off('click').on('click', function () {
+				$.ajax({
+					url: "/api/book/rent",
+					type: "post",
+					data: {
+						bookId: bookId
+					},
+					success: function(rs) {
+						alert("대여 신청 완료");
+						rentBtn.hide();
+						rentBtn.after(openBtn);
+					},
+					error: function(xhr, status, error) {
+		                var errorMessage = xhr.responseText || "도서 대여 중 오류가 발생했습니다.";
+		                alert("오류: " + errorMessage);
+		            }
+				});
+	        });
 		});
 	});
-	
 	// 찜 후 버튼변경
 	$(".wishBtn").click(function() {
 		const wishBtn = $(this);
@@ -294,7 +318,6 @@ $(document).ready(function() {
             }
 		});
 	});
-	
 });
 </script>
 
