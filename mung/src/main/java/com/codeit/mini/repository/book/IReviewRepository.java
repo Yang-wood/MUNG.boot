@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.codeit.mini.dto.book.ReviewDTO;
 import com.codeit.mini.entity.book.RentEntity;
 import com.codeit.mini.entity.book.ReviewEntity;
 import com.codeit.mini.entity.book.WishEntity;
@@ -27,7 +28,7 @@ public interface IReviewRepository extends JpaRepository<ReviewEntity, Long> {
 	@Query("SELECT r "
 		 + "FROM ReviewEntity r "
 		 + "WHERE r.rentEntity.rentId = :rentId")
-	Optional<ReviewEntity> findByRentId(@Param("rentId") RentEntity rentEntity) throws Exception;
+	Optional<ReviewEntity> findByRentId(@Param("rentId") Long rentId) throws Exception;
 	
 	//  특정 도서에 대한 리뷰 리스트
 	@Query("SELECT r "

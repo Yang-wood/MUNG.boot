@@ -93,6 +93,16 @@ public class RentServiceImpl implements IRentService {
 	
 		for (RentEntity rentEntity : expiredRent) {
 			rentEntity.setIsReturned(1);
+			
+			BookEntity bookEntity = rentEntity.getBookEntity();
+			if (bookEntity != null) {
+				bookEntity.setRentCount(bookEntity.getRentCount() - 1);
+				bookRepository.save(bookEntity);
+			} else {
+				log.warn("NOT BOOK");
+				throw new IllegalAccessException("NOT BOOK");
+			}
+			
 			rentRepository.save(rentEntity);
 			log.info("반납처리 rentId : {}", rentEntity.getRentId());
 		}
@@ -100,10 +110,10 @@ public class RentServiceImpl implements IRentService {
 	
 	// 대여 목록
 	@Override
-	public Page<BookEntity> findRentListByMemberId(Long memberId, Pageable pageable) throws Exception {
+	public Page<RentEntity> findRentListByMemberId(Long memberId, Pageable pageable) throws Exception {
 		
 		Page<RentEntity> rentPage = rentRepository.findByMemberEntity_MemberId(memberId, pageable);
 		
-		return rentPage.map(RentEntity::getBookEntity);
+		return rentPage;
 	}
 }

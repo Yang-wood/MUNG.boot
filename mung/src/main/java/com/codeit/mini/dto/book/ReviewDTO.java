@@ -1,5 +1,8 @@
 package com.codeit.mini.dto.book;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,14 +34,19 @@ public class ReviewDTO {
     private Long bookId;
 	
     @Size(max = 300, message = "제목은 300자를 초과할 수 없습니다.")
-    @NotNull(message = "제목은 필수입니다.")
     private String title;
 
     @Size(max = 500, message = "내용은 500자를 초과할 수 없습니다.")
-    @NotNull(message = "내용은 필수입니다.")
     private String content;
 
     @Min(value = 0, message = "별점은 0 이상이어야 합니다.")
-    @NotNull(message = "별점은 필수입니다.")
-    private Double rating;
+    private Integer rating;
+    
+    private LocalDateTime regdate;
+    
+    private LocalDateTime updateDate;
+    
+    
+    
+    
 }

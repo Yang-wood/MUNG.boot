@@ -22,24 +22,32 @@ public interface IReviewService {
 	// 리뷰 수정
 	void modifyReview(ReviewDTO reviewDTO) throws Exception;
 	
+	// 리뷰 유무
+	boolean hasReview(Long rentId) throws Exception;
+	
+	// 본인 리뷰인지 학인
+	ReviewDTO findById(Long reviewId) throws Exception;
+	
 	// 특정 도서 전체 회원 리뷰 목록
 	Page<ReviewEntity> findReviewByBookId(Long bookId, Pageable pageable) throws Exception;
 	
 	// 특정 도서 + 특정 회원 리뷰 목록
-	List<ReviewEntity> findReviewByMemberId(Long bookId, Long MemberId) throws Exception;
+	List<ReviewDTO> findReviewByMemberId(Long bookId, Long MemberId) throws Exception;
 	
-	default ReviewDTO entityToDto(ReviewEntity reviewEntity) throws Exception{
+	default ReviewDTO entityToDto(ReviewEntity reviewEntity) {
 		ReviewDTO reviewDTO = ReviewDTO.builder().reviewId(reviewEntity.getReviewId())
 												 .memberId(reviewEntity.getMemberEntity().getMemberId())
 												 .bookId(reviewEntity.getBookEntity().getBookId())
 												 .title(reviewEntity.getTitle())
 												 .content(reviewEntity.getContent())
 												 .rating(reviewEntity.getRating())
+												 .regdate(reviewEntity.getRegDate())
+												 .updateDate(reviewEntity.getUpDate())
 												 .build();
 		return reviewDTO;
 	}
 	
-	default ReviewEntity dtoToEntity(ReviewDTO reviewDTO) throws Exception{
+	default ReviewEntity dtoToEntity(ReviewDTO reviewDTO) {
 		ReviewEntity reviewEntity = ReviewEntity.builder().reviewId(reviewDTO.getReviewId())
 												.memberEntity(MemberEntity.builder().memberId(reviewDTO.getMemberId()).build())
 												.rentEntity(RentEntity.builder().rentId(reviewDTO.getRentId()).build())
