@@ -55,7 +55,7 @@ class SampleRegTests {
 	// 테스트용 회원 입력
 //	@Test
 //	void testRegMember() {
-//		List<MemberEntity> dummyMembers = IntStream.rangeClosed(1, 100)
+//		List<MemberEntity> dummyMembers = IntStream.rangeClosed(1, 200)
 //				.mapToObj(i -> {
 //					String loginId = "user" + String.format("%03d", i); // user001, user002...
 //					String email = "email" + String.format("%03d", i) + "@example.com";
@@ -87,33 +87,33 @@ class SampleRegTests {
 //			log.info("마지막 저장된 회원: {}", saveDum.get(saveDum.size() - 1).getLoginId());
 //		}
 //	}
-	
-	// 테스트용 대여 등록
-	@Test
-	void testRegRandomRent() throws Exception {
-		Random random = new Random();
-		
-		for (int i = 0; i < 100; i++) {
-			Long memberId = (long)(random.nextInt(100) + 1);
-			Long bookId = (long)(random.nextInt(84) + 1);
-			
-			try {
-				rentService.rentBook(bookId, memberId);
-				log.info("대여 성공 mem : {}, book : {}", memberId, bookId);
-			} catch (Exception e) {
-				log.warn("대여 실패 mem : {}, book : {}, 원인 : {}", memberId, bookId, e.getMessage());
-			}
-		}
-	}
+//	
+//	// 테스트용 대여 등록
+//	@Test
+//	void testRegRandomRent() throws Exception {
+//		Random random = new Random();
+//		
+//		for (int i = 0; i < 200; i++) {
+//			Long memberId = (long)(random.nextInt(200) + 1);
+//			Long bookId = (long)(random.nextInt(90) + 1);
+//			
+//			try {
+//				rentService.rentBook(bookId, memberId);
+//				log.info("대여 성공 mem : {}, book : {}", memberId, bookId);
+//			} catch (Exception e) {
+//				log.warn("대여 실패 mem : {}, book : {}, 원인 : {}", memberId, bookId, e.getMessage());
+//			}
+//		}
+//	}
 	
 	// 테스트용 찜 등록
 //	@Test
 //	void testRegRandomWish() throws Exception {
 //		Random random = new Random();
 //		
-//		for (int i = 0; i < 100; i++) {
-//			Long memberId = (long)(random.nextInt(100) + 1);
-//			Long bookId = (long)(random.nextInt(84) + 1);
+//		for (int i = 0; i < 200; i++) {
+//			Long memberId = (long)(random.nextInt(200) + 1);
+//			Long bookId = (long)(random.nextInt(90) + 1);
 //			
 //			try {
 //				wishService.addWished(bookId, memberId);
@@ -129,8 +129,8 @@ class SampleRegTests {
 //	void testRegRandomReview() throws Exception {
 //		Random random = new Random();
 //		
-//		for (int i = 0; i < 100; i++) {
-//			Long rentId = (long)(random.nextInt(100) + 1);
+//		for (int i = 0; i < 200; i++) {
+//			Long rentId = (long)(random.nextInt(389) + 1);
 //			Long memberId = (long)(random.nextInt(100) + 1);
 //			int rating = (random.nextInt(5) + 1);
 //			String title  = "테스트용 리뷰 제목" + i;

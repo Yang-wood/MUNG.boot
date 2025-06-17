@@ -243,8 +243,8 @@
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 	                <button type="button" class="btn btn-primary" id="regReviewBtn">등록</button>
-	                <button type="button" class="btn btn-warning d-none" id="removeReviewBtn">수정</button>
-	                <button type="button" class="btn btn-danger d-none" id="modifyReviewBtn">삭제</button>
+	                <button type="button" class="btn btn-warning d-none" id="modifyReviewBtn">수정</button>
+	                <button type="button" class="btn btn-danger d-none" id="removeReviewBtn">삭제</button>
 	            </div>
 	        </div>
 	    </div>
@@ -362,6 +362,11 @@ $(document).ready(function() {
 		$("#reviewContent").val("");
 
 		$("#reviewRegModal").modal("show");
+		
+		$("#regModalReviewId").val(""); 
+	    $("#regReviewBtn").removeClass("d-none");
+	    $("#modifyReviewBtn").addClass("d-none");
+	    $("#removeReviewBtn").addClass("d-none");
 	});
 	
 	$("#regReviewBtn").on("click", function() {
@@ -373,8 +378,8 @@ $(document).ready(function() {
 		    rating: rating	
 		};
 		
-		if(!reviewData.title || !reviewData.content) {
-		    alert("제목과 내용을 입력하세요.");
+		if(!reviewData.title || !reviewData.content || !reviewData.rating) {
+		    alert("제목과 내용, 별점을 입력하세요.");
 		    return;
 		}
 		
@@ -406,6 +411,18 @@ $(document).ready(function() {
 	                $("#reviewsContainer").html('<p class="text-muted">등록된 리뷰가 없습니다.</p>');
 	                return;
 	            }
+	            
+	            function escapeHtml(str) {
+	                return str.replace(/[&<>"']/g, function(match) {
+	                    return ({
+	                        '&': '&amp;',
+	                        '<': '&lt;',
+	                        '>': '&gt;',
+	                        '"': '&quot;',
+	                        "'": '&#39;'
+	                    })[match];
+	                });
+	            }
 
 	            let html = '';
 	            reviews.forEach(review => {
@@ -417,8 +434,8 @@ $(document).ready(function() {
 	                       data-title="${review.title}"
 	                       data-content="${review.content}"
 	                       data-rating="${review.rating}">
-	                    <h5 class="mb-1 text-primary">📚 ${review.title}</h5>
-	                    <p class="mb-1">${review.content}</p>
+	                    <h5 class="mb-1 text-primary">📚 ${escapeHtml(review.title)}</h5>
+	                    <p class="mb-1">${escapeHtml(review.content)}</p>
 	                    <small>
 	                      <span>⭐ ${review.rating}점</span> |
 	                      <span>${new Date(review.regdate).toLocaleDateString()}</span>
@@ -456,14 +473,16 @@ $(document).ready(function() {
 	    $("#regModalRentId").val(rentId);
 	    $("#reviewTitle").val(title);
 	    $("#reviewContent").val(content);
-	    $(".starrr").starrr('setRating', rating); 
+	    $(".starrr").starrr("setRating", rating); 
+	    $(".rating").text(rating);
 	    
 	    $("#regModalTitle").text(title); 
 	    
 	    $("#regReviewBtn").addClass("d-none");
-	    $("#removeReviewBtn").removeClass("d-none").text("수정");
-	    $("#modifyReviewBtn").removeClass("d-none").text("삭제");
+	    $("#modifyReviewBtn").removeClass("d-none").text("수정");
+	    $("#removeReviewBtn").removeClass("d-none").text("삭제");
 	    
+	    $("#reviewListModal").modal("hide");
 	    $("#reviewRegModal").modal("show");
 	});
 	
@@ -473,16 +492,19 @@ $(document).ready(function() {
 	    const rentId = $("#regModalRentId").val();
 	    const title = $("#reviewTitle").val();
 	    const content = $("#reviewContent").val();
-	    const rating = $(".starrr").starrr('getRating');
+	    const ratingValue = rating;
+	    
+	    console.log({ bookId, rentId, title, content, ratingValue });
 	    
 	    $.ajax({
-	        url: `/api/reviews/${reviewId}`, // 수정 API 엔드포인트
+	        url: `/api/book/modifyReview/${reviewId}`, // 수정 API 엔드포인트
 	        method: "PUT",
 	        contentType: "application/json",
 	        data: JSON.stringify({bookId, rentId, title, content, rating}),
 	        success: function() {
 	            alert("리뷰가 수정되었습니다.");
 	            $("#reviewRegModal").modal("hide");
+	            $("#reviewListModal").modal("show");
 	            // 리뷰 목록 다시 로드 또는 수정된 리뷰 부분만 갱신
 	            loadReviewList(bookId);
 	        },
@@ -493,16 +515,19 @@ $(document).ready(function() {
 	});
 	
 	$("#removeReviewBtn").on("click", function() {
+		
+		if(!confirm("리뷰를 삭제하시겠습니까?")) {
+			return;
+		}
+		
 	    const reviewId = $("#regModalReviewId").val();
 	    $.ajax({
-	        url: `/api/reviews/${reviewId}`, // 삭제 API 엔드포인트
+	        url: `/api/book/removeReview/${reviewId}`,
 	        method: "DELETE",
 	        success: function() {
 	            alert("리뷰가 삭제되었습니다.");
 	            $("#reviewRegModal").modal("hide");
-	            // 리뷰 목록 다시 로드
-	            const bookId = $("#regModalBookId").val();
-	            loadReviewList(bookId);
+	            location.reload();
 	        },
 	        error: function() {
 	            alert("리뷰 삭제에 실패했습니다.");

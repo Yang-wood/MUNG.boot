@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -150,7 +151,7 @@ public class RestAPIController {
 		try {
 			reviewDTO.setMemberId(member.getMemberId());
 			ReviewEntity reviewEntity = reviewService.regReview(reviewDTO);
-			return new ResponseEntity<>("리뷰 등록 성공", HttpStatus.OK);
+			return new ResponseEntity<>(reviewEntity, HttpStatus.OK);
 			
 		} catch (IllegalStateException e) {
 			return new ResponseEntity<>("리뷰가 있습니다.", HttpStatus.CONFLICT);
@@ -191,6 +192,27 @@ public class RestAPIController {
 		}
 	}
 		
+	// 리뷰 수정
+	@PutMapping("/modifyReview/{reviewId}")
+	public ResponseEntity<?> modifyReview(@PathVariable("reviewId") Long reviewId,
+										  @RequestBody ReviewDTO reviewDTO,
+										  HttpSession session) {
+		try {
+			MemberDTO member = (MemberDTO) session.getAttribute("member");
+			if (member == null) {
+				return new ResponseEntity<>("로그인 후 이용해주세요.", HttpStatus.UNAUTHORIZED);
+			}
+			
+			reviewDTO.setReviewId(reviewId);
+			reviewDTO.setMemberId(member.getMemberId());
+			
+			reviewService.modifyReview(reviewDTO);
+			return new ResponseEntity<>("MODIFY REVIEW", HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("SERVER ERROR", e.getMessage());
+			return new ResponseEntity<>("SERVER ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	// 회원 리뷰 리스트 출력
 	@GetMapping("/myReviewList/{bookId}")

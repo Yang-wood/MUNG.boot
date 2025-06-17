@@ -43,13 +43,18 @@ public class MyBookpageController {
 						   @RequestParam(value = "size", defaultValue = "10") int size,
 						   Model model, HttpSession session) {
 		
+		MemberDTO member = (MemberDTO) session.getAttribute("member");
+		
+		if (member == null) {
+			return "member/login";
+		}
+		
 		Sort sort = Sort.by(Sort.Direction.DESC, "regDate");
 		Pageable pageable = PageRequest.of(page, size, sort);
 	    Page<BookDTO> dtoPage = Page.empty(pageable);
 	    Long finalMemberId = null;
 
 	    try {
-	        MemberDTO member = (MemberDTO) session.getAttribute("member");
 	        if (member != null) {
 	            finalMemberId = member.getMemberId();
 	        }
@@ -103,13 +108,18 @@ public class MyBookpageController {
 			   			   @RequestParam(value = "size", defaultValue = "10") int size,
 			   			   Model model, HttpSession session) {
 		
+		MemberDTO member = (MemberDTO) session.getAttribute("member");
+		
+		if (member == null) {
+			return "member/login";
+		}
+		
 		Sort sort = Sort.by(Sort.Direction.DESC, "rentDate");
 		Pageable pageable = PageRequest.of(page, size, sort);
 	    Page<BookDTO> dtoPage = Page.empty(pageable);
 	    Long finalMemberId = null;
 
 	    try {
-	        MemberDTO member = (MemberDTO) session.getAttribute("member");
 	        if (member != null) {
 	            finalMemberId = member.getMemberId();
 	        }
