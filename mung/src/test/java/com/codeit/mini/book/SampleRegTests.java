@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.codeit.mini.SampleData.SampleMemberRepo;
 import com.codeit.mini.dto.book.ReviewDTO;
@@ -51,6 +52,8 @@ class SampleRegTests {
 	private IWishService wishService;
 	@Autowired
 	private IReviewService reviewService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	// 테스트용 회원 입력
 //	@Test
@@ -59,11 +62,12 @@ class SampleRegTests {
 //				.mapToObj(i -> {
 //					String loginId = "user" + String.format("%03d", i); // user001, user002...
 //					String email = "email" + String.format("%03d", i) + "@example.com";
-//					String password = "user" + String.format("%03d", i); // 비밀번호를 평문으로 사용
+//					String rawPassword = "user" + String.format("%03d", i); // 비밀번호를 평문으로 사용
+//					String encodePassword = passwordEncoder.encode(rawPassword);
 //
 //					return MemberEntity.builder()
 //							.loginId(loginId)
-//							.memberPw(password) // 비밀번호를 평문으로 저장
+//							.memberPw(encodePassword) // 비밀번호를 평문으로 저장
 //							.memberName("테스터" + i)
 //							.memberEmail(email)
 //							.emailVerified('Y') // 이메일 인증 완료
@@ -71,7 +75,6 @@ class SampleRegTests {
 //							.lastLogin(null) // 초기에는 마지막 로그인 시간 없음
 //							.status(0)       // 0: 활성 상태
 //							.points(i * 100) // 포인트 (100, 200, ...)
-//							.coupon(i % 5)   // 쿠폰 (0~4 반복)
 //							.role(0)         // 0: 일반 사용자
 //							.build();
 //				})
@@ -87,15 +90,15 @@ class SampleRegTests {
 //			log.info("마지막 저장된 회원: {}", saveDum.get(saveDum.size() - 1).getLoginId());
 //		}
 //	}
-//	
-//	// 테스트용 대여 등록
+
+	// 테스트용 대여 등록
 //	@Test
 //	void testRegRandomRent() throws Exception {
 //		Random random = new Random();
 //		
 //		for (int i = 0; i < 200; i++) {
 //			Long memberId = (long)(random.nextInt(200) + 1);
-//			Long bookId = (long)(random.nextInt(90) + 1);
+//			Long bookId = (long)(random.nextInt(126) + 1);
 //			
 //			try {
 //				rentService.rentBook(bookId, memberId);
@@ -113,7 +116,7 @@ class SampleRegTests {
 //		
 //		for (int i = 0; i < 200; i++) {
 //			Long memberId = (long)(random.nextInt(200) + 1);
-//			Long bookId = (long)(random.nextInt(90) + 1);
+//			Long bookId = (long)(random.nextInt(126) + 1);
 //			
 //			try {
 //				wishService.addWished(bookId, memberId);
@@ -131,7 +134,7 @@ class SampleRegTests {
 //		
 //		for (int i = 0; i < 200; i++) {
 //			Long rentId = (long)(random.nextInt(389) + 1);
-//			Long memberId = (long)(random.nextInt(100) + 1);
+//			Long memberId = (long)(random.nextInt(200) + 1);
 //			int rating = (random.nextInt(5) + 1);
 //			String title  = "테스트용 리뷰 제목" + i;
 //			String content = "테스트용 리뷰 내용" + i;
