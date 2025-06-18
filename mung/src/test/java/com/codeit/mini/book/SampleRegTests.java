@@ -55,10 +55,17 @@ class SampleRegTests {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	private static final int NUM_LENGTH = 200;
+    private static final int MAX_MEMBER_ID = 200;
+    private static final int MAX_BOOK_ID = 63;
+    private static final int MAX_RENT_ID = 202;
+    private static final int MAX_RATING = 5;
+	
+	
 	// 테스트용 회원 입력
 //	@Test
 //	void testRegMember() {
-//		List<MemberEntity> dummyMembers = IntStream.rangeClosed(1, 200)
+//		List<MemberEntity> dummyMembers = IntStream.rangeClosed(1, MAX_MEMBER_ID)
 //				.mapToObj(i -> {
 //					String loginId = "user" + String.format("%03d", i); // user001, user002...
 //					String email = "email" + String.format("%03d", i) + "@example.com";
@@ -95,63 +102,95 @@ class SampleRegTests {
 //	@Test
 //	void testRegRandomRent() throws Exception {
 //		Random random = new Random();
+//		int successfulRentals = 0;
+//		int failedRentals = 0;
 //		
-//		for (int i = 0; i < 200; i++) {
-//			Long memberId = (long)(random.nextInt(200) + 1);
-//			Long bookId = (long)(random.nextInt(126) + 1);
+//		
+//		for (int i = 0; i < NUM_LENGTH; i++) {
+//			Long memberId = (long)(random.nextInt(MAX_MEMBER_ID) + 1);
+//			Long bookId = (long)(random.nextInt(MAX_BOOK_ID) + 1);
 //			
 //			try {
 //				rentService.rentBook(bookId, memberId);
-//				log.info("대여 성공 mem : {}, book : {}", memberId, bookId);
+//				log.info("대여 성공: 회원 ID = {}, 도서 ID = {}", memberId, bookId);
+//                successfulRentals++;
 //			} catch (Exception e) {
-//				log.warn("대여 실패 mem : {}, book : {}, 원인 : {}", memberId, bookId, e.getMessage());
+//				log.warn("대여 실패: 회원 ID = {}, 도서 ID = {}, 원인: {}", memberId, bookId, e.getMessage());
+//                failedRentals++;
 //			}
 //		}
+//		log.info("--- 무작위 대여 시도 요약 ---");
+//        log.info("총 시도 횟수: {}", NUM_LENGTH);
+//        log.info("성공한 대여: {}", successfulRentals);
+//        log.info("실패한 대여: {}", failedRentals);
 //	}
 	
 	// 테스트용 찜 등록
 //	@Test
 //	void testRegRandomWish() throws Exception {
 //		Random random = new Random();
+//		int success = 0;
+//		int failed = 0;
 //		
-//		for (int i = 0; i < 200; i++) {
-//			Long memberId = (long)(random.nextInt(200) + 1);
-//			Long bookId = (long)(random.nextInt(126) + 1);
+//		for (int i = 0; i < NUM_LENGTH; i++) {
+//			Long memberId = (long)(random.nextInt(MAX_MEMBER_ID) + 1);
+//			Long bookId = (long)(random.nextInt(MAX_BOOK_ID) + 1);
 //			
 //			try {
 //				wishService.addWished(bookId, memberId);
 //				log.info("찜 성공 mem : {}, book : {}", memberId, bookId);
+//				success++;
 //			} catch (Exception e) {
 //				log.warn("찜 실패 mem : {}, book : {}, 원인 : {}", memberId, bookId, e.getMessage());
+//				failed++;
 //			}
 //		}
+//		log.info("--- 무작위 찜 시도 요약 ---");
+//        log.info("총 시도 횟수: {}", NUM_LENGTH);
+//        log.info("성공한 찜: {}", success);
+//        log.info("실패한 찜: {}", failed);
 //	}
 	
 	// 테스트용 리뷰 작성
 //	@Test
 //	void testRegRandomReview() throws Exception {
 //		Random random = new Random();
+//		int success = 0;
+//		int failed = 0;
+//		int skip = 0;
 //		
-//		for (int i = 0; i < 200; i++) {
-//			Long rentId = (long)(random.nextInt(389) + 1);
-//			Long memberId = (long)(random.nextInt(200) + 1);
-//			int rating = (random.nextInt(5) + 1);
+//		for (int i = 0; i < NUM_LENGTH; i++) {
+//			Long rentId = (long)(random.nextInt(MAX_RENT_ID) + 1);
+//			Long memberId = (long)(random.nextInt(MAX_MEMBER_ID) + 1);
+//			int rating = (random.nextInt(MAX_RATING) + 1);
 //			String title  = "테스트용 리뷰 제목" + i;
 //			String content = "테스트용 리뷰 내용" + i;
 //			
 //			Optional<RentEntity> optional = rentRepository.findById(rentId);
 //			
 //			if (optional.isEmpty()) {
+//				log.warn("리뷰 스킵: rentId {} 에 해당하는 대여 기록 없음.", rentId);
+//				skip++;
 //				continue;
 //			}
 //			
 //			RentEntity rentEntity = optional.get();
 //			
 //			if (rentEntity.getHasReview() != null && rentEntity.getHasReview() == 1) {
+//				log.warn("리뷰 스킵: rentId {} 에 이미 리뷰가 작성되어 있음.", rentId);
+//                skip++;
 //				continue;
 //			}
 //			
-//			Long bookId = rentEntity.getBookEntity().getBookId();
+//			Long bookId = null;
+//			
+//			if (rentEntity.getBookEntity() != null) {
+//                bookId = rentEntity.getBookEntity().getBookId();
+//            } else {
+//                log.warn("리뷰 스킵: rentId {} 에 연결된 BookEntity가 없음.", rentId);
+//                skip++;
+//                continue;
+//            }
 //			
 //			ReviewDTO reviewDTO = ReviewDTO.builder().rentId(rentId)
 //													 .bookId(bookId)
@@ -161,10 +200,23 @@ class SampleRegTests {
 //													 .content(content)
 //													 .build();
 //			
-//			ReviewEntity reviewEntity = reviewService.regReview(reviewDTO);
-//			
-//			assertNotNull(reviewEntity);
+//			try {
+//				ReviewEntity reviewEntity = reviewService.regReview(reviewDTO);
+//				assertNotNull(reviewEntity);
+//				
+//				log.info("리뷰 성공: rentId = {}, memberId = {}, bookId = {}", rentId, memberId, bookId);
+//                success++;
+//			} catch (Exception e) {
+//				log.warn("리뷰 실패: rentId = {}, memberId = {}, bookId = {}, 원인: {}",
+//                        rentId, memberId, bookId, e.getMessage());
+//				failed++;
+//			}
 //		}
+//		log.info("--- 무작위 리뷰 등록 시도 요약 ---");
+//		log.info("총 시도 횟수: {}", NUM_LENGTH);
+//		log.info("성공한 리뷰 등록: {}", success);
+//		log.info("실패한 리뷰 등록 (서비스 오류): {}", failed);
+//		log.info("스킵된 리뷰 등록 (조건 불충족): {}", skip);
 //	}
 
 }

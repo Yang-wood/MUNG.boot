@@ -58,17 +58,17 @@ $(document).ready(function() {
 		$("#searchForm").submit();
 	});
 	
-	let selectBookId = null; // 현재 클릭된 대여/찜 버튼의 bookId
-    let rentBtn = null;        // 현재 클릭된 대여 버튼 요소를 저장
-    let openBtn = '';      // 대여 완료 후 삽입할 '열람하기' 버튼 HTML
-    let bookPoint = 0;        // 선택된 책의 대여 포인트
-    let memberPoint = 0;              // 현재 회원의 보유 포인트
+	let selectBookId = null; 
+    let rentBtn = null;       
+    let openBtn = '';      
+    let bookPoint = 0;        
+    let memberPoint = 0;         
 	
 	// 대여 후 버튼변경
 	$(".rentBtn").click(function() {
 		rentBtn = $(this);
 		selectBookId = rentBtn.data("book-id");
-		selectBookId = rentBtn.closest(".book-buttons").find(".point-text span").text();
+		bookPoint = rentBtn.closest(".book-buttons").find(".point-text span").text();
 		openBtn = `<a href="/book/epubRead?bookId=${selectBookId}" class="btn btn-primary read-button">열람하기</a>`;
 		
 		$.ajax({
