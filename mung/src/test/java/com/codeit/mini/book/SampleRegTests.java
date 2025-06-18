@@ -55,10 +55,10 @@ class SampleRegTests {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	private static final int NUM_LENGTH = 200;
-    private static final int MAX_MEMBER_ID = 200;
-    private static final int MAX_BOOK_ID = 63;
-    private static final int MAX_RENT_ID = 202;
+	private static final int NUM_LENGTH = 300;
+    private static final int MAX_MEMBER_ID = 299;
+    private static final int MAX_BOOK_ID = 211;
+    private static final int MAX_RENT_ID = 300;
     private static final int MAX_RATING = 5;
 	
 	
@@ -71,10 +71,10 @@ class SampleRegTests {
 //					String email = "email" + String.format("%03d", i) + "@example.com";
 //					String rawPassword = "user" + String.format("%03d", i); // 비밀번호를 평문으로 사용
 //					String encodePassword = passwordEncoder.encode(rawPassword);
-//
+//					
 //					return MemberEntity.builder()
 //							.loginId(loginId)
-//							.memberPw(encodePassword) // 비밀번호를 평문으로 저장
+//							.memberPw(encodePassword) 
 //							.memberName("테스터" + i)
 //							.memberEmail(email)
 //							.emailVerified('Y') // 이메일 인증 완료

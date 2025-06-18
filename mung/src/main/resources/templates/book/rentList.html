@@ -68,7 +68,7 @@
 				                       th:href="@{/book/rentList(page=${page.number - 1}, size=${page.size})}"
 				                       tabindex="-1">&lt;</a>
 				                </li>
-				                <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+				                <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
 				                    th:classappend="${i} == ${page.number} ? 'active'" class="page-item">
 				                    <a class="page-link"
 				                       th:href="@{/book/rentList(page=${i}, size=${page.size})}"
@@ -210,7 +210,11 @@
 						    contentType: "application/json",
 						    data: JSON.stringify(reviewData),
 						    success: function(response) {
-						    	alert("리뷰가 등록되었습니다.");
+						    	if (response.message) {
+						            alert(response.message);
+						        } else {
+						            alert("리뷰가 등록되었습니다.");
+						        }
 						    	$("#reviewRegModal").modal('hide');
 						    	location.reload();
 						    },
