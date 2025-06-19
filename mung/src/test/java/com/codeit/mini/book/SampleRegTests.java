@@ -3,6 +3,7 @@ package com.codeit.mini.book;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -55,10 +56,10 @@ class SampleRegTests {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	private static final int NUM_LENGTH = 1000;
+	private static final int NUM_LENGTH = 10000;
     private static final int MAX_MEMBER_ID = 1000;
     private static final int MAX_BOOK_ID = 211;
-    private static final int MAX_RENT_ID = 300;
+    private static final int MAX_RENT_ID = 991;
     private static final int MAX_RATING = 5;
 	
 	
@@ -159,64 +160,63 @@ class SampleRegTests {
 //		int failed = 0;
 //		int skip = 0;
 //		
+//		List<Long> rentIds = rentRepository.findAll().stream()
+//                .map(RentEntity::getRentId)
+//                .collect(Collectors.toList());
+//
 //		for (int i = 0; i < NUM_LENGTH; i++) {
-//			Long rentId = (long)(random.nextInt(MAX_RENT_ID) + 1);
-//			Long memberId = (long)(random.nextInt(MAX_MEMBER_ID) + 1);
-//			int rating = (random.nextInt(MAX_RATING) + 1);
-//			String title  = "테스트용 리뷰 제목" + i;
-//			String content = "테스트용 리뷰 내용" + i;
-//			
+//			Long rentId = rentIds.get(random.nextInt(rentIds.size()));
 //			Optional<RentEntity> optional = rentRepository.findById(rentId);
-//			
+//		
 //			if (optional.isEmpty()) {
 //				log.warn("리뷰 스킵: rentId {} 에 해당하는 대여 기록 없음.", rentId);
 //				skip++;
 //				continue;
 //			}
-//			
+//		
 //			RentEntity rentEntity = optional.get();
-//			
+//		
 //			if (rentEntity.getHasReview() != null && rentEntity.getHasReview() == 1) {
-//				log.warn("리뷰 스킵: rentId {} 에 이미 리뷰가 작성되어 있음.", rentId);
-//                skip++;
+//				log.warn("리뷰 스킵: rentId {} 에 이미 리뷰가 있음.", rentId);
+//				skip++;
+//				continue;
+//			}	
+//		
+//			Long bookId = rentEntity.getBookEntity() != null ? rentEntity.getBookEntity().getBookId() : null;
+//			Long memberId = rentEntity.getMemberEntity().getMemberId();
+//		
+//			if (bookId == null || memberId == null) {
+//				log.warn("리뷰 스킵: rentId {} 에 연결된 book 또는 member 없음.", rentId);
+//				skip++;
 //				continue;
 //			}
-//			
-//			Long bookId = null;
-//			
-//			if (rentEntity.getBookEntity() != null) {
-//                bookId = rentEntity.getBookEntity().getBookId();
-//            } else {
-//                log.warn("리뷰 스킵: rentId {} 에 연결된 BookEntity가 없음.", rentId);
-//                skip++;
-//                continue;
-//            }
-//			
-//			ReviewDTO reviewDTO = ReviewDTO.builder().rentId(rentId)
-//													 .bookId(bookId)
-//													 .memberId(memberId)
-//													 .rating(rating)
-//													 .title(title)
-//													 .content(content)
-//													 .build();
-//			
+//		
+//			ReviewDTO reviewDTO = ReviewDTO.builder()
+//											.rentId(rentId)
+//											.bookId(bookId)
+//											.memberId(memberId)
+//											.rating(random.nextInt(5) + 1)
+//											.title("테스트용 리뷰 제목" + i)
+//											.content("테스트용 리뷰 내용" + i)
+//											.build();
+//		
 //			try {
-//				ReviewEntity reviewEntity = reviewService.regReview(reviewDTO);
-//				assertNotNull(reviewEntity);
-//				
+//				Map<String, Object> result = reviewService.regReview(reviewDTO);
+//				assertNotNull(result);
 //				log.info("리뷰 성공: rentId = {}, memberId = {}, bookId = {}", rentId, memberId, bookId);
-//                success++;
+//				success++;
 //			} catch (Exception e) {
 //				log.warn("리뷰 실패: rentId = {}, memberId = {}, bookId = {}, 원인: {}",
-//                        rentId, memberId, bookId, e.getMessage());
+//						rentId, memberId, bookId, e.getMessage(), e);
 //				failed++;
 //			}
 //		}
-//		log.info("--- 무작위 리뷰 등록 시도 요약 ---");
-//		log.info("총 시도 횟수: {}", NUM_LENGTH);
-//		log.info("성공한 리뷰 등록: {}", success);
-//		log.info("실패한 리뷰 등록 (서비스 오류): {}", failed);
-//		log.info("스킵된 리뷰 등록 (조건 불충족): {}", skip);
+//		
+//		log.info("=== 리뷰 등록 테스트 요약 ===");
+//		log.info("총 시도 횟수: {}", success + failed + skip);
+//		log.info("성공: {}", success);
+//		log.info("실패: {}", failed);
+//		log.info("스킵: {}", skip);
 //	}
 
 }
