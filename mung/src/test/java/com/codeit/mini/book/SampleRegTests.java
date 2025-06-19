@@ -55,8 +55,8 @@ class SampleRegTests {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	private static final int NUM_LENGTH = 300;
-    private static final int MAX_MEMBER_ID = 299;
+	private static final int NUM_LENGTH = 1000;
+    private static final int MAX_MEMBER_ID = 1000;
     private static final int MAX_BOOK_ID = 211;
     private static final int MAX_RENT_ID = 300;
     private static final int MAX_RATING = 5;
@@ -69,7 +69,7 @@ class SampleRegTests {
 //				.mapToObj(i -> {
 //					String loginId = "user" + String.format("%03d", i); // user001, user002...
 //					String email = "email" + String.format("%03d", i) + "@example.com";
-//					String rawPassword = "user" + String.format("%03d", i); // 비밀번호를 평문으로 사용
+//					String rawPassword = "1234"; // 비밀번호를 평문으로 사용
 //					String encodePassword = passwordEncoder.encode(rawPassword);
 //					
 //					return MemberEntity.builder()
@@ -81,7 +81,7 @@ class SampleRegTests {
 //							.termsAgreed('Y')   // 약관 동의
 //							.lastLogin(null) // 초기에는 마지막 로그인 시간 없음
 //							.status(0)       // 0: 활성 상태
-//							.points(i * 100) // 포인트 (100, 200, ...)
+//							.points(5000) // 포인트 (100, 200, ...)
 //							.role(0)         // 0: 일반 사용자
 //							.build();
 //				})
